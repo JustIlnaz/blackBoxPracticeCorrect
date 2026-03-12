@@ -15,7 +15,7 @@ class Program
             }
 
             double value = (x * x - 9) / (x - 2);
-
+                
             if (value < 0)
             {
                 throw new ArgumentException("Ошибка: подкоренное выражение отрицательное");

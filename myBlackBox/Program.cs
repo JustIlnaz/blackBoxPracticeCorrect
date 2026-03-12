@@ -1,61 +1,56 @@
 ﻿using System;
-using System.Globalization;
 
-
-namespace myBlackBox
+class Program
 {
-    internal class Program
+    static void Main()
     {
-        static double CalculateF(double x)
+        try
         {
-            if (x <= -2)
-                throw new ArgumentOutOfRangeException("x", "x вне области допустимых значений");
+            Console.Write("Введите значение x: ");
+            string input = Console.ReadLine();
 
-            if (Math.Abs(x - 1) < 1e-9)
-                throw new DivideByZeroException("Деление на ноль");
+            double x;
 
-            double numerator = Math.Log(x + 2);
-            double denominator = x - 1;
-
-            return numerator / denominator;
-        }
-
-        static void Main()
-        {
-            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-            CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
-
-
-            while (true)
+            if (!double.TryParse(input, out x))
             {
-                Console.Write("Введите x: ");
-                string input = Console.ReadLine();
+                Console.WriteLine("Ошибка: введено не число.");
+                return;
+            }
 
-                if (input.ToLower() == "выход")
-                    break;
+            if (x < -2)
+            {
+                Console.WriteLine("Ошибка: x вне области определения (x < -2).");
+                return;
+            }
 
-                input = input.Replace(',', '.');
+            if (x == -2)
+            {
+                Console.WriteLine("Ошибка: ln(0) не определён.");
+                return;
+            }
 
-                if (!double.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out double x))
-                {
-                    Console.WriteLine("Ошибка: введено не число\n");
-                    continue;
-                }
+            if (x == 1)
+            {
+                Console.WriteLine("Ошибка: деление на ноль (x = 1).");
+                return;
+            }
 
-                try
-                {
-                    double result = CalculateF(x);
-
-                    if (double.IsNaN(result) || double.IsInfinity(result))
-                        Console.WriteLine($"f({x}) = не определено\n");
-                    else
-                        Console.WriteLine($"f({x}) = {result:F6}\n");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Ошибка: {ex.Message}\n");
-                }
+            if (x > -2 && x < 1 || x > 1)
+            {
+                double y = Math.Log(x + 2) / (x - 1);
+                Console.WriteLine($"Результат: y = {y:F6}");
             }
         }
+        catch (OverflowException)
+        {
+            Console.WriteLine("Ошибка: введённое число слишком большое или слишком маленькое.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Неизвестная ошибка: " + ex.Message);
+        }
+
+        Console.WriteLine("\nНажмите любую клавишу для выхода...");
+        Console.ReadKey();
     }
 }
